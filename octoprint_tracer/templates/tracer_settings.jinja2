@@ -1,0 +1,59 @@
+<form class="form-horizontal">
+    <div class="control-group">
+        <label class="control-label">{{ _('Image URL') }}</label>
+        <div class="controls">
+            <input type="text" class="input-block-level" data-bind="value: settings.plugins.tracer.img_url">
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">{{ _('Scan Delay') }}</label>
+        <div class="controls">
+            <input type="number" step="any" class="input-mini text-right" data-bind="value: settings.plugins.tracer.scan_delay">
+            <span class="help-inline">{{ _('(seconds) delay before capturing image') }}</span>
+        </div>
+  </div>    
+    <div class="control-group">
+        <label class="control-label">{{ _('Tool Options') }}</label>
+        <div class="controls">
+            <input type="number" step="any" class="input-mini text-right" data-bind="value: settings.plugins.tracer.tool_offs_x">
+            <span class="help-inline">{{ _('Offset X (mm)') }}</span>
+        </div>
+
+        <div class="controls">
+            <input type="number" step="any" class="input-mini text-right" data-bind="value: settings.plugins.tracer.tool_offs_y">
+            <span class="help-inline">{{ _('Offset Y (mm)') }}</span>
+            <span class="help-block">{{ _('Offset betewen camera center and tool center') }}</span>
+        </div>
+
+        <div class="controls">
+            <input type="number" step="any" class="input-mini text-right" data-bind="value: settings.plugins.tracer.tool_diam">
+            <span class="help-inline">{{ _('Tool Diameter (mm)') }}</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">{{ _('Cut Options') }}</label>
+        <div class="controls">
+            <input type="number" step="any" class="input-mini text-right" data-bind="value: settings.plugins.tracer.cut_offset">
+            <span class="help-inline">{{ _('Offset (mm)') }}</span>
+            <span class="help-block">{{ _('Additional offset inward (for holes) or outward (for parts) added in addition to the tool radius.  Offset of zero should place the edge of the kerf on the line center.  Number may be negative to offset outward (for holes) or inward (for parts)') }}</span>
+        </div>
+        <div class="controls">
+            <input type="number" step="any" class="input-mini text-right" data-bind="value: settings.plugins.tracer.cut_depth">
+            <span class="help-inline">{{ _('Depth (mm)') }}</span>
+            <span class="help-block">{{ _('Currently does not handle clearance plane separate from top of workpiece, so cut depth should be height of clearance plane plus the depth of cut, and Z=0 should reference the clearance plane.') }}</span>
+        </div>
+        <div class="controls">
+            <input type="number" step="any" class="input-mini text-right" data-bind="value: settings.plugins.tracer.cut_feedrate">
+            <span class="help-inline">{{ _('Feedrate (mm/min) horizontal') }}</span>
+            <span class="help-block">{{ _('Currently the Z movement feedrate cannot be specified separately, and is fixed at 1/5th of lateral feed rate.') }}</span>
+        </div>
+        <div class="controls">
+            <input type="checkbox" data-bind="checked: settings.plugins.tracer.cut_hole">
+            <span class="help-inline">{{ _('Hole (unchecked implies Part)') }}</span>
+        </div>
+        <div class="controls">
+            <input type="checkbox" data-bind="checked: settings.plugins.tracer.cut_climb">
+            <span class="help-inline">{{ _('Climb milling (unchecked implies conventional)') }}</span>
+        </div>
+    </div>
+</form>
