@@ -57,7 +57,7 @@ class TracerPlugin(octoprint.plugin.StartupPlugin,
         
     def get_settings_defaults(self):
         return dict(
-            img_url="http://192.168.1.105/webcam/?action=snapshot",
+            img_url="http://localhost/webcam/?action=snapshot",
             scan_delay = 0.5,
             tool_offs_x = 0,
             tool_offs_y = 0,
@@ -141,29 +141,13 @@ class TracerPlugin(octoprint.plugin.StartupPlugin,
         return flask.Response(b'--frame\r\n' b'Content-Type: image/png\r\n\r\n' + pngbuffer.tobytes() + b'\r\n\r\n', 
                 mimetype='multipart/x-mixed-replace; boundary=frame')
 
-    @octoprint.plugin.BlueprintPlugin.route("/start_test")
-    def startTest(self):
-        self._logger.info("received /start_test request")
+    @octoprint.plugin.BlueprintPlugin.route("/start_trace")
+    def start_trace(self):
+        self._logger.info("received /start_trace request")
         if not self._printer.is_ready():
             return "not ready"
-        self.worker.post(("start_test",))
-        return "posted start_test"
-
-    @octoprint.plugin.BlueprintPlugin.route("/start_test2")
-    def startTest2(self):
-        self._logger.info("received /start_test2 request")
-        if not self._printer.is_ready():
-            return "not ready"
-        self.worker.post(("start_test2",))
-        return "posted start_test2"
-
-    @octoprint.plugin.BlueprintPlugin.route("/start_test3")
-    def startTest3(self):
-        self._logger.info("received /start_test3 request")
-        if not self._printer.is_ready():
-            return "not ready"
-        self.worker.post(("start_test3",))
-        return "posted start_test3"
+        self.worker.post(("start_trace",))
+        return "posted start_trace"
 
     @octoprint.plugin.BlueprintPlugin.route("/cancel")
     def requestCancel(self):

@@ -11,14 +11,16 @@ $(function() {
 
         self.camSrc = ko.observable();
         self.camSrc("/plugin/tracer/camera_image");
-        self.skelSrc = ko.observable();
-        self.skelSrc("/plugin/tracer/camera_aim?");
+        self.aimSrc = ko.observable();
+        self.aimSrc("/plugin/tracer/camera_aim?");
+        self.markSrc = ko.observable();
+        self.markSrc("/plugin/tracer/camera_markers?");
 
         self.takePicture = function() {
-            // alert("called takePicture");
             self.imagecount = self.imagecount + 1;
             self.camSrc("/plugin/tracer/camera_image?" + self.imagecount);
-            self.skelSrc("/plugin/tracer/camera_aim?" + self.imagecount);
+            self.aimSrc("/plugin/tracer/camera_aim?" + self.imagecount);
+            self.markSrc("/plugin/tracer/camera_markers?" + self.imagecount);
         }
 
         // This will get called before the HelloWorldViewModel gets bound to the DOM, but after its
@@ -26,7 +28,7 @@ $(function() {
         // gets called _after_ the settings have been retrieved from the OctoPrint backend and thus
         // the SettingsViewModel been properly populated.
         self.onBeforeBinding = function() {
-            console.log("called onBeforeBinding");
+            // console.log("called onBeforeBinding");
         }
     }
 

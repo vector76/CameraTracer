@@ -1,24 +1,23 @@
 <div class="row-fluid">
-    <button class="btn btn-primary" data-bind="click: takePicture">Take Picture</button><br/>
-    <a href="http://192.168.1.105/plugin/tracer/camera_skel">camera_skel</a><br/>
-    <a href="http://192.168.1.105/plugin/tracer/camera_image">camera_image</a><br/>
-    <a href="http://192.168.1.105/plugin/tracer/camera_markers">camera_markers</a><br/>
-    <a href="http://192.168.1.105/plugin/tracer/start_test3">start_test3</a><br/>
-    <a href="http://192.168.1.105/plugin/tracer/cancel">cancel</a><br/>
+    <button class="btn btn-primary" data-bind="click: takePicture">Refresh Images</button><br/>
+    <br/>
+    <a href="http://192.168.1.105/plugin/tracer/start_trace">Start Trace</a><br/>
+    <br/>
+    <a href="http://192.168.1.105/plugin/tracer/cancel">Cancel</a><br/>
 </div>
 
 <div class="row-fluid">
-    <h1>Video</h1>
-    (Disabled)
-    &lt;img src="/webcam/?action=stream"&gt;
+    <h1>Image Center Assistant</h1>
+    <img data-bind="attr: { src: aimSrc }">
 </div>
 
 <div class="row-fluid">
-    <h1>Camera Image</h1>
+    <h1>Filtered Camera Image</h1>
     <img data-bind="attr: { src: camSrc }">
 </div>
 
 <div class="row-fluid">
-    <h1>Skeletonized</h1>
-    <img data-bind="attr: { src: skelSrc }">
+    <h1>Detected Markers</h1>
+    <img data-bind="attr: { src: markSrc }">
 </div>
+

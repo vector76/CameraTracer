@@ -5,7 +5,7 @@ import numpy as np
 import cv2
 import math
 
-#%% Arrowboard copied from test6
+#%% Arrowboard defines geometry of 'arrow' shape for generation and extrapolation
 class ArrowBoard:
     def __init__(self):
         self.board_rows = 7

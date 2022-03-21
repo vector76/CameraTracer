@@ -3,6 +3,7 @@ import traceback
 import threading
 import queue
 import cv2
+import time
 from .cvtrace import PathManager, GcodeWriter
 
 class TracerWorker(threading.Thread):
@@ -20,15 +21,9 @@ class TracerWorker(threading.Thread):
             cmd = message[0]
             self.log_info(f"Got command {cmd}")
             
-            if cmd == "start_test":
-                self.test_routine_1()
-                self.log_info("Worker done with test_routine_1")
-            elif cmd == "start_test2":
-                self.test_routine_2()
-                self.log_info("Worker done with test_routine_2")
-            elif cmd == "start_test3":
-                self.test_routine_3()
-                self.log_info("Worker done with test_routine_3")
+            if cmd == "start_trace":
+                self.trace_routine()
+                self.log_info("Worker done with trace_routine")
             elif cmd == "cancel":
                 self.log_info("Got cancel request while not running, ignoring")
             elif cmd == "continue":
@@ -82,66 +77,7 @@ class TracerWorker(threading.Thread):
                 # repeat loop, process more messages
 
 
-    def test_routine_1(self):
-        try:
-            self.xyz = None
-            self.commands("M114")
-            self.commands("G90")
-            self.wait(5)
-            if self.xyz is None:
-                self.log_info("Worker did not get xyz, aborting")
-                return
-            xyz = self.xyz  # keep local copy
-            self.commands(f"G1 X{xyz[0]+10} F800")
-            self.wait(5)
-            self.commands(f"G1 Y{xyz[1]+10} F800")
-            self.wait(5)
-            self.commands(f"G1 X{xyz[0]} F800")
-            self.wait(5)
-            self.commands(f"G1 Y{xyz[1]} F800")
-            self.wait(5)
-        except Exception as e:
-            self.log_info(f"Worker got exception {e}, aborting")
-    
-    
-    def test_routine_2(self):
-        try:
-            data_folder = self.parent.get_plugin_data_folder()
-            self.xyz = None
-            self.commands("M114")
-            self.commands("G90")
-            self.wait(5)
-            if self.xyz is None:
-                self.log_info("Worker did not get xyz, aborting")
-                return
-            xyz = self.xyz  # keep local copy
-            pm = PathManager()
-            img1 = self.parent.getImage()
-            cv2.imwrite(f"{data_folder}/img1.png", img1)
-            self.commands(f"G1 X{xyz[0]+10} F800")
-            self.commands(self.delay_command())
-            self.wait(5)
-            img2 = self.parent.getImage()
-            cv2.imwrite(f"{data_folder}/img2.png", img2)
-            self.commands(f"G1 X{xyz[0]} Y{xyz[1]+10} F800")
-            self.commands(self.delay_command())
-            self.wait(5)
-            img3 = self.parent.getImage()
-            cv2.imwrite(f"{data_folder}/img3.png", img3)
-            pm.addCapture(img1, xyz[0], xyz[1])
-            pm.addCapture(img2, xyz[0]+10, xyz[1])
-            st, nextx, nexty = pm.addCapture(img3, xyz[0], xyz[1]+10)
-            self.commands(f"G1 X{nextx:.2f} Y{nexty:.2f} F800")
-            self.commands(self.delay_command())
-            self.wait(5)
-            img4 = self.parent.getImage()
-            cv2.imwrite(f"{data_folder}/img4.png", img4)
-            self.log_info("done")
-        except Exception as e:
-            self.log_info(f"Worker got exception {e}, aborting")
-    
-    
-    def test_routine_3(self):
+    def trace_routine(self):
         try:
             data_folder = self.parent.get_plugin_data_folder()
             self.xyz = None
@@ -193,7 +129,8 @@ class TracerWorker(threading.Thread):
                 cut_feedrate = self.parent._settings.getFloat(["cut_feedrate"]),
             )
             gw = GcodeWriter(contours_xy[0], gset)
-            self.parent.lfs.add_file('generated.gcode', gw)
+            now_str = time.strftime('%Y-%m-%d_%H_%M_%S')
+            self.parent.lfs.add_file(f"trace_{now_str}.gcode", gw)
             self.log_info("done")
         except Exception:
             self.log_info(f"Worker got exception {traceback.format_exc()}, aborting")
