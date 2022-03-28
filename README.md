@@ -2,7 +2,7 @@
 
 ## Introduction
 This plugin intends to enable direct generation of toolpaths from physical line 
-following. This is illustrated in this video:
+following. This is illustrated in this video:  
 [![Line Follower Octoprint Plugin](https://img.youtube.com/vi/u80e94eu4s0/0.jpg)](https://www.youtube.com/watch?v=u80e94eu4s0)
 
 This could be useful in cases where the object is not originating from a CAD drawing, 
@@ -10,19 +10,90 @@ but is coming from a physical object, like cutting a piece to fit into an existi
 odd-shaped hole.
 
 ## Installation
-This has only been tested on OctoPi.  It has only been tested with the latest version
-of OctoPrint.  It might work on earlier versions based on Python 3, but the odds are
-low that it would work on Python 2.
+Unfortunately, this plugin cannot be installed onto OctoPi directly with automatic 
+resolution of the package dependencies.  More detail is provided below, but for the
+short version, *before attempting installation* of the plugin, log into the Pi via
+ssh and perform these four commands:
+```
+sudo apt-get update
+sudo apt-get install libhdf5-103 libgtk-3-0
+source ~/oprint/bin/activate
+pip install numpy==1.21.4 opencv-contrib-python==4.5.5.62
+```
 
-The plugin depends on other Python packages but does not depend on binary applications,
-so it *might* work on Windows or Ubuntu x86 hosts.  These have not been tested.
+This has only been tested on OctoPi 0.18.0.  It might work on other versions of 
+OctoPrint, and it might work on other platforms like Windows or x86 Linux, but it 
+has not been tested and there are no guarantees.
 
-Installation on a Raspberry Pi running OctoPi should work through the plugin manager 
-without any extra steps.  Installation does take some time (approximately 10 minutes) 
-to build numpy.  (The plugin also uses OpenCV, but the dependency is automatically 
-resolved with precompiled binaries so it does not take a lot of extra time.  Only 
-numpy has to be built.)  Building numpy only takes time on the first installation.
-If the plugin is uninstalled and reinstalled, it is much quicker.
+### Side note about wheels
+A "wheel" is a precompiled binary Python package that can be installed without having
+to recompile locally.  This is important on the Raspberry Pi because attempting 
+to compile some packages can take a long time, or fail, or take a long time (many 
+hours) *and then* fail.
+
+Wheels are version dependent, and some newer versions of a package may be unavailable
+as wheels.  This means that everything might be "fine" at one point in time when 
+the current version is available as a wheel, and later, the newer current version may 
+be  unavailable as a wheel, and a simple `pip install numpy` might utterly fail
+where it used to succeed.
+
+As you can see [here](https://www.piwheels.org/project/numpy/) and
+[here](https://www.piwheels.org/project/opencv-contrib-python/), on Python 3.7, some 
+of the later versions are unavailable as precompiled binaries.  Standard package
+dependency resolution will download the latest source version and compilation will 
+fail.
+
+### Manually installing dependencies
+By manually installing a particular version, or forcing the latest wheel-only version,
+the dependencies can be met and the plugin can install.
+
+To do this, connect via ssh and perform these commands:
+```
+source ~/oprint/bin/activate
+pip install numpy==1.21.4
+pip install opencv-contrib-python==4.5.5.62
+```
+
+The first line activates the octoprint python virtual environment, and the other two 
+lines install versions that are available in binary form according to piwheels.org.
+
+As an alternative, you could do this instead
+```
+source ~/oprint/bin/activate
+pip install --only-binary :all: numpy opencv-contrib-python
+```
+
+The second line forces pip to only get wheels.
+
+In addition, opencv requires some libraries that are not present by default, (at 
+least on OctoPi), so these two commands are also required:
+```
+sudo apt-get update
+sudo apt-get install libhdf5-103 libgtk-3-0
+```
+
+Once the libraries and python packages have been installed, check that numpy and opencv
+are available:
+```
+source ~/oprint/bin/activate
+python
+```
+    
+And then to confirm they are working, within the python interpreter
+```
+Python 3.7.3 (default, Jul 25 2020, 13:03:44)
+[GCC 8.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import numpy as np
+>>> np.__version__
+'1.21.4'
+>>> import cv2
+>>> cv2.__version__
+'4.5.5'
+```
+
+With numpy and opencv properly installed and working, plugin installation should go 
+smoothly.
 
 ## Preparation
 The scan requires a physical printout of the "board96.png" image.  This should be
