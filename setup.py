@@ -33,7 +33,7 @@ plugin_url = "https://github.com/"
 plugin_license = "MIT"
 
 # Any additional requirements besides OctoPrint should be listed here
-plugin_requires = ["numpy", "pillow", "opencv-contrib-python"]
+plugin_requires = ["numpy", "opencv-contrib-python"]
 
 ### --------------------------------------------------------------------------------------------------------------------
 ### More advanced options that you usually shouldn't have to touch follow after this point
